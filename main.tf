@@ -1,5 +1,5 @@
 data "aws_vpc" "main" {
-  default = true
+  id = var.vpc_id
 }
 
 resource "aws_security_group" "sg_my_server" {
@@ -69,8 +69,13 @@ data "aws_ami" "amazon-linux-2" {
   }
 }
 
+data "aws_subnet_ids" "subnet_ids" {
+  vpc_id = data.aws_vpc.main.id
+}
+
 resource "aws_instance" "my_server" {
   ami                    = data.aws_ami.amazon-linux-2.id
+  subnet_id = tolist(data.aws_subnet_ids.subnet_ids.ids)[0]
   instance_type          = var.instance_type
   key_name               = aws_key_pair.deployer.key_name
   vpc_security_group_ids = [aws_security_group.sg_my_server.id]

@@ -16,3 +16,7 @@ variable "server_name" {
   type    = string
   default = "Apache Example Server"
 }
+
+variable "vpc_id" {
+  type = string
+}
